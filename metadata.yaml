@@ -1,0 +1,36 @@
+name: cassandra
+summary: Charm for the Cassandra database
+description: |
+  Apache Cassandra is a highly-scalable partitioned row store. Rows are organized into tables with a required primary key.
+series:
+  - kubernetes
+bases:
+  - name: ubuntu
+    channel: 20.04/stable
+provides:
+  cql:
+    interface: cql
+containers:
+  cassandra:
+    resource: cassandra-image
+    mounts:
+      - storage: data
+        location: /var/lib/cassandra
+      - storage: config
+        location: /etc/cassandra
+peers:
+  cassandra:
+    interface: cassandra
+storage:
+  data:
+    type: filesystem
+    location: /var/lib/cassandra
+  config:
+    type: filesystem
+    location: /var/lib/cassandra
+resources:
+  cassandra-image:
+    type: oci-image
+    description: Docker image for Cassandra
+    auto-fetch: true
+    upstream-source: 'bitnami/cassandra:3.11.10'

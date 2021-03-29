@@ -1,0 +1,5 @@
+options:
+  port:
+    default: 9042
+    type: int
+    description: The port Cassandra will be listening on
