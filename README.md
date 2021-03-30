@@ -18,7 +18,7 @@ $ charmcraft build
 Created 'cassandra.charm'.
 
 
-$ juju deploy ./cassandra.charm --resource cassandra-image=bitnami/cassandra:3.11.10
+$ juju deploy ./cassandra.charm --resource cassandra-image=cassandra:3.11.10
 
 $ juju status
 Model    Controller  Cloud/Region        Version  SLA          Timestamp
@@ -31,7 +31,24 @@ Unit        Workload  Agent  Address       Ports  Message
 cassandra/0*  active    idle   10.1.243.208         cassandra started
 ```
 
-Visit that IP address at port 9042 in your browser and you should see the cassandra web UI. For example, http://10.1.243.208:9042/
+To access Cassandra, download `cqlsh` from https://downloads.datastax.com/#cqlsh
+
+Create a config file that includes the connection details:
+
+```
+$ touch cassandra_config
+
+# cassandra_config
+[connection]
+hostname = 10.1.243.208
+port = 9042
+```
+
+Access the cluster with:
+
+```
+./cqlsh --cqlshrc cassandra_config
+```
 
 
 ## Developing

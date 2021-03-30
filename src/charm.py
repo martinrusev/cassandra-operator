@@ -93,7 +93,7 @@ class CassandraOperator(CharmBase):
                 "cassandra": {
                     "override": "replace",
                     "summary": "cassandra service",
-                    "command": "bin/cassandra -f",
+                    "command": "sh -c docker-entrypoint.sh",
                     "default": "start",
                     "environment": []
                 }
@@ -126,6 +126,15 @@ class CassandraOperator(CharmBase):
         logger.info("Creating a config file at: {}".format(config_yaml))
         with open(config_yaml, "w+") as file:
             yaml.dump(config_dict, file)
+
+
+    def _is_running(self, container, service):
+        """Helper method to determine if a given service is running in a given container"""
+        try:
+            service = container.get_service(service)
+        except ModelError:
+            return False
+        return service.current == ServiceStatus.ACTIVE
 
 
 if __name__ == "__main__":

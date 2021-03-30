@@ -33,4 +33,4 @@ resources:
     type: oci-image
     description: Docker image for Cassandra
     auto-fetch: true
-    upstream-source: 'bitnami/cassandra:3.11.10'
+    upstream-source: 'cassandra:3.11.10'
