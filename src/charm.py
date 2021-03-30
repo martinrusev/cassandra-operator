@@ -33,16 +33,6 @@ class CassandraOperator(CharmBase):
             self.on.cassandra_pebble_ready, self._on_cassandra_pebble_ready
         )
 
-        # self.framework.observe(self.on["cql"].relation_changed, self.on_cql_changed)
-
-        # self.framework.observe(
-        #     self.on["cassandra"].relation_changed, self.on_cassandra_changed
-        # )
-        # self.framework.observe(
-        #     self.on["cassandra"].relation_departed, self.on_cassandra_departed
-        # )
-
-
     def seeds(self):
         seeds = UNIT_ADDRESS.format(self.meta.name, 0, self.meta.name, self.model.name)
         num_units = self.num_units()

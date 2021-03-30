@@ -36,9 +36,9 @@ To access Cassandra, download `cqlsh` from https://downloads.datastax.com/#cqlsh
 Create a config file that includes the connection details:
 
 ```
-$ touch cassandra_config
+$ touch config
 
-# cassandra_config
+# config
 [connection]
 hostname = 10.1.243.208
 port = 9042
@@ -47,7 +47,11 @@ port = 9042
 Access the cluster with:
 
 ```
-./cqlsh --cqlshrc cassandra_config
+$ cqlsh-astra/bin ❯ ./cqlsh --cqlshrc config                                                                                                                                                                      12m 37s 
+Connected to charm-cluster at 10.1.243.223:9042.
+[cqlsh 6.8.0 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh>
 ```
 
 
