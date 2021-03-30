@@ -129,4 +129,4 @@ class CassandraOperator(CharmBase):
 
 
 if __name__ == "__main__":
-    main(CassandraOperatorCharm)
+    main(CassandraOperator)
