@@ -11,7 +11,7 @@ from ops.charm import CharmBase, PebbleReadyEvent
 from ops.framework import StoredState
 from ops.main import main
 from ops.model import ActiveStatus, ModelError
-from ops.pebble import ServiceStatus
+from ops.pebble import ServiceStatus, Layer
 
 from jproperties import Properties
 
@@ -73,13 +73,14 @@ class CassandraOperator(CharmBase):
         self._generate_properties_file()
 
         logger.info("_start_cassandra")
-        container.add_layer("cassandra", self._cassandra_layer(), True)
+        container.add_layer("cassandra", self._cassandra_layer(), combine=True)
         container.autostart()
         self.unit.status = ActiveStatus("cassandra started")
 
 
     def _cassandra_layer(self):
-        layer = {
+        layer = Layer(
+            raw = {
             "summary": "cassandra layer",
             "description": "cassandra layer",
             "services": {
@@ -87,11 +88,11 @@ class CassandraOperator(CharmBase):
                     "override": "replace",
                     "summary": "cassandra service",
                     "command": "sh -c docker-entrypoint.sh",
-                    "default": "start",
+                    "startup": "enabled",
                     "environment": []
                 }
             },
-        }
+        })
 
         return layer
 
