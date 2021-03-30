@@ -27,7 +27,7 @@ storage:
     location: /var/lib/cassandra
   config:
     type: filesystem
-    location: /var/lib/cassandra
+    location: /etc/cassandra
 resources:
   cassandra-image:
     type: oci-image
