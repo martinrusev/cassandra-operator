@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from typing import cast
 import yaml
 import os
 
@@ -12,6 +13,7 @@ from ops.main import main
 from ops.model import ActiveStatus, ModelError
 from ops.pebble import ServiceStatus
 
+from jproperties import Properties
 
 CLUSTER_PORT = 7001
 UNIT_ADDRESS = "{}-{}.{}-endpoints.{}.svc.cluster.local"
@@ -78,6 +80,7 @@ class CassandraOperator(CharmBase):
             return
 
         self._generate_config_file()
+        self._generate_properties_file()
 
         logger.info("_start_cassandra")
         container.add_layer("cassandra", self._cassandra_layer(), True)
@@ -101,6 +104,17 @@ class CassandraOperator(CharmBase):
         }
 
         return layer
+
+    def _generate_properties_file(self):
+        properties_file = os.path.join(CONFIG_PATH, "cassandra-rackdc.properties")
+
+        cassandra_properties = Properties()
+        cassandra_properties["dc"] = "dc1"
+        cassandra_properties["rack"] = "rack1"
+
+        with open(properties_file, "wb") as f:
+            cassandra_properties.store(f, encoding="utf-8")
+
 
     def _generate_config_file(self):
         config_dict = {

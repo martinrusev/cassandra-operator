@@ -1,1 +1,2 @@
 git+git://github.com/canonical/operator@57b4f5259b93b320d7f412798dd22a58b031c14f#egg=ops
+jproperties
