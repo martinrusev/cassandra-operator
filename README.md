@@ -73,3 +73,13 @@ operator behaviour without full deployment. Just `run_tests`:
 ```
 ./run_tests
 ```
+
+
+## Roadmap
+
+The Cassandra Charm is still a work in progress.
+
+Here are some of the things coming soon:
+
+  - [ ] Multi-node support
+  - [ ] Multi-node configuration options
