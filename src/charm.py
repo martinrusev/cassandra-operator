@@ -33,6 +33,31 @@ class CassandraOperator(CharmBase):
             self.on.cassandra_pebble_ready, self._on_cassandra_pebble_ready
         )
 
+        self.framework.observe(self.on.config_changed, self.on_config_changed)
+        self.framework.observe(self.on["cql"].relation_changed, self.on_cql_changed)
+        self.framework.observe(
+            self.on["cassandra"].relation_changed, self.on_cassandra_changed
+        )
+        self.framework.observe(
+            self.on["cassandra"].relation_departed, self.on_cassandra_departed
+        )
+
+    def on_config_changed(self, _):
+        for relation in self.model.relations["cql"]:
+            self.update_cql(relation)
+
+    def on_cql_changed(self, event):
+        self.update_cql(event.relation)
+
+
+    def update_cql(self, relation):
+        if self.unit.is_leader():
+            logger.info("Setting relation data")
+            if str(self.model.config["port"]) != relation.data[self.app].get(
+                "port", None
+            ):
+                relation.data[self.app]["port"] = str(self.model.config["port"])
+
     def seeds(self):
         seeds = UNIT_ADDRESS.format(self.meta.name, 0, self.meta.name, self.model.name)
         num_units = self.num_units()
