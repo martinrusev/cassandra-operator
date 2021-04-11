@@ -10,7 +10,7 @@ import os
 from ops.charm import CharmBase, PebbleReadyEvent
 from ops.framework import StoredState
 from ops.main import main
-from ops.model import ActiveStatus, ModelError
+from ops.model import ActiveStatus, ModelError, MaintenanceStatus
 from ops.pebble import ServiceStatus, Layer
 
 from jproperties import Properties
@@ -48,6 +48,12 @@ class CassandraOperator(CharmBase):
 
     def on_cql_changed(self, event):
         self.update_cql(event.relation)
+
+    def on_cassandra_changed(self, event):
+        self._restart_cassandra()
+
+    def on_cassandra_departed(self, event):
+        self._restart_cassandra()
 
 
     def update_cql(self, relation):
@@ -157,6 +163,19 @@ class CassandraOperator(CharmBase):
         with open(config_yaml, "w+") as file:
             yaml.dump(config_dict, file)
 
+    def _restart_cassandra(self):
+        logger.info("Restarting cassandra ...")
+
+        container = self.unit.get_container(SERVICE)
+
+        container.get_plan().to_yaml()
+        status = container.get_service(SERVICE)
+        if status.current == ServiceStatus.ACTIVE:
+            container.stop(SERVICE)
+
+        self.unit.status = MaintenanceStatus("cassandra maintenance")
+        container.start(SERVICE)
+        self.unit.status = ActiveStatus("cassandra restarted")
 
     def _is_running(self, container, service):
         """Helper method to determine if a given service is running in a given container"""
